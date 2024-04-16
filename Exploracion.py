@@ -3,7 +3,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import sys
 
-### Ruta directorio qué tiene paquetes
+
+## Ruta directorio qué tiene paquetes
 sys.path
 sys.path.append('C:\\Users\\User\\Desktop\\Analitica lll\\Pipealejo71-ANALYTICS_lll_HEALTH_SECTOR') ## este comanda agrega una ruta
 #Carga de datos
