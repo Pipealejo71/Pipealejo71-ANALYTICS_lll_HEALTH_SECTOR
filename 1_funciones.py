@@ -36,3 +36,12 @@ def agrupar_variables_por_tipo(dataframe):
         for columna in columnas:
             print(f"  - {columna}")
         print()
+
+
+import pandas as pd
+
+def filtrar_columnas_por_porcentaje(df, porcentaje):
+    porcentaje_no_nulos = df.count() / len(df)
+    columnas_a_considerar = porcentaje_no_nulos[porcentaje_no_nulos >= porcentaje].index
+    df = df[columnas_a_considerar]
+    return df

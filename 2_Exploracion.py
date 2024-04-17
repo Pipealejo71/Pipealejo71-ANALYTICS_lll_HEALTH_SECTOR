@@ -79,11 +79,9 @@ cronicos.describe
 # Identificar variables vacías
 variables_vacias = cronicos.isnull().any()
 print(variables_vacias)
-# Eliminar columnas vacías
-cronicos = cronicos.dropna(axis=1)
-#Eliminar duplicados
 
-#eliminar variables con menos de 1000 datos
+# cronicos_filtrado ahora contiene solo las columnas con el 80% o más de sus datos diferentes de nulos
+cronicos=filtrar_columnas_por_porcentaje(cronicos, 0.8)
 
 
 
