@@ -48,3 +48,19 @@ egresos['SERVICIO HABILITADO COD'] = egresos['SERVICIO HABILITADO COD'].astype(s
 
 egresos['PERTINENCIA DIAGNOSTICA'].value_counts()
 egresos = egresos.drop('PERTINENCIA DIAGNOSTICA', axis=1)
+
+## Cronicos
+
+# Función para renombrar las columnas
+cronicos.rename(columns=clean_column_name, inplace=True)
+display(cronicos.columns.tolist())
+
+# Función para agrupar las variables por tipo de datos
+agrupar_variables_por_tipo(cronicos)
+
+
+
+
+
+
+
