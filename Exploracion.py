@@ -10,13 +10,9 @@ sys.path
 sys.path.append('C:\\Users\\JavierBurgos\\Desktop\\LOCAL\\Analítica 3\\UNIDADES\\Unidad 3 - Aplicaciones en Operaciones (Salud)\\5.1 Entrega\\Pipealejo71-ANALYTICS_lll_HEALTH_SECTOR')
 
 #Carga de datos
-#egresos = ('RETO_df_egresos.csv')
-#usuarios = ('RETO_df_usuarios.csv')
-#cronicos = ('RETO_df_cronicos.csv')
-
 egresos=pd.read_csv('RETO_df_egresos.csv')
 usuarios=pd.read_csv('RETO_df_usuarios.csv')
-cronicos=pd.read_csv('RETO_df_cronicos.csv')
+cronicos=pd.read_csv('RETO_df_cronicos.csv', delimiter=';', encoding='latin1')
 
 #Exploración de datos
 egresos.info()
