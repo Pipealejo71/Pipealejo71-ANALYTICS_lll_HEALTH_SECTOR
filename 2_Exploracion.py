@@ -55,9 +55,10 @@ egresos = egresos.drop('PERTINENCIA DIAGNOSTICA', axis=1)
 cronicos.rename(columns=clean_column_name, inplace=True)
 display(cronicos.columns.tolist())
 
-# Función para agrupar las variables por tipo de datos
+# Función para observar las variables por tipo de datos
 agrupar_variables_por_tipo(cronicos)
 
+#gráfico
 import matplotlib.pyplot as plt
 # Contar la cantidad total de datos en cada variable
 cantidad_total_datos = cronicos.count()
@@ -71,7 +72,17 @@ plt.xticks(rotation=90)  # Rotar las etiquetas del eje x para una mejor legibili
 plt.tight_layout()
 plt.show()
 
+#Cantidad de datos en cada variable
+cantidad_total_datos = cronicos.count()
+print(cantidad_total_datos)
+cronicos.describe
+# Identificar variables vacías
+variables_vacias = cronicos.isnull().any()
+print(variables_vacias)
+# Eliminar columnas vacías
+cronicos = cronicos.dropna(axis=1)
 #Eliminar duplicados
+
 #eliminar variables con menos de 1000 datos
 
 
