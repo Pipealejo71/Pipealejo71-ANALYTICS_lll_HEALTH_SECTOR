@@ -58,9 +58,21 @@ display(cronicos.columns.tolist())
 # Función para agrupar las variables por tipo de datos
 agrupar_variables_por_tipo(cronicos)
 
+import matplotlib.pyplot as plt
+# Contar la cantidad total de datos en cada variable
+cantidad_total_datos = cronicos.count()
+# Crear el gráfico de barras
+plt.figure(figsize=(10, 6))
+cantidad_total_datos.plot(kind='bar')
+plt.title('Cantidad total de datos por variable')
+plt.xlabel('Variables')
+plt.ylabel('Cantidad total de datos')
+plt.xticks(rotation=90)  # Rotar las etiquetas del eje x para una mejor legibilidad
+plt.tight_layout()
+plt.show()
 
-
-
+#Eliminar duplicados
+#eliminar variables con menos de 1000 datos
 
 
 
