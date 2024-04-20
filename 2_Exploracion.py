@@ -110,7 +110,7 @@ display(cronicos.columns.tolist())
 # Función para observar las variables por tipo de datos
 agrupar_variables_por_tipo(cronicos)
 
-#gráfico
+#gráfico 
 import matplotlib.pyplot as plt
 # Contar la cantidad total de datos en cada variable
 cantidad_total_datos = cronicos.count()
