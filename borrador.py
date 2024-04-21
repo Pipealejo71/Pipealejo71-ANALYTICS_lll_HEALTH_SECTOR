@@ -29,26 +29,9 @@ def Snake_case_clean(column_name):
 
 
 
-# 2. Función.2 para observar las variables por tipo de datos
-def Agrupar_variables_por_tipo(dataframe):
-    variables_por_tipo = {}
-    for column_name, dtype in dataframe.dtypes.items():
-        tipo_str = str(dtype)
-        if tipo_str not in variables_por_tipo:
-            variables_por_tipo[tipo_str] = [column_name]
-        else:
-            variables_por_tipo[tipo_str].append(column_name)
-    for tipo, columnas in variables_por_tipo.items():
-        print(f"Tipo: {tipo}")
-        for columna in columnas:
-            print(f"  - {columna}")
-        print()
 
-
-
-
-# 3. Función.3 graficar distribución de los datos de cada variable en usuarios
-def Grafico1_usuarios(df):
+# 2. Función.2 grafica distribución de los datos de cada variable en usuarios
+def Grafico_distribucion_usuarios(df):
     num_columnas = 4
     num_filas = math.ceil(len(usuarios.columns) / num_columnas)
 
@@ -80,17 +63,7 @@ def Grafico1_usuarios(df):
     plt.show()
 
 
-
-
-# 4. Función.4 para filtrar columnas por porcentaje
-def Filtrar_columnas_por_porcentaje(df, porcentaje):
-    porcentaje_no_nulos = df.count() / len(df)
-    columnas_a_considerar = porcentaje_no_nulos[porcentaje_no_nulos >= porcentaje].index
-    df = df[columnas_a_considerar]
-    return df
-
-
-# 5. Fución.5 graficar distribución
+# 3. Fución.3 grafica distribución de una variable de un DataFrame
 def grafico_distribucion_variable(variable, df):
 
   if variable not in df.columns:
@@ -124,6 +97,33 @@ def grafico_distribucion_variable(variable, df):
   plt.show()
 
 
+
+# 4. Función.4 Consulta agrupa las variables por tipo
+def Agrupar_variables_por_tipo(dataframe):
+    variables_por_tipo = {}
+    for column_name, dtype in dataframe.dtypes.items():
+        tipo_str = str(dtype)
+        if tipo_str not in variables_por_tipo:
+            variables_por_tipo[tipo_str] = [column_name]
+        else:
+            variables_por_tipo[tipo_str].append(column_name)
+    for tipo, columnas in variables_por_tipo.items():
+        print(f"Tipo: {tipo}")
+        for columna in columnas:
+            print(f"  - {columna}")
+        print()
+
+
+
+
+# 4. Función.4 para filtrar columnas por porcentaje
+def Filtrar_columnas_por_porcentaje(df, porcentaje):
+    porcentaje_no_nulos = df.count() / len(df)
+    columnas_a_considerar = porcentaje_no_nulos[porcentaje_no_nulos >= porcentaje].index
+    df = df[columnas_a_considerar]
+    return df
+
+
 # 6. Función.6 grafico conteo de datos por variable
 def grafico_conteo_df(df):
     cantidad_total_datos = df.count()
@@ -152,7 +152,7 @@ def grafico_conteo_df(df):
 
 
 ### 1. LECTURA DE DATOS
-## Ruta directorio qué tiene paquetes
+## Ruta directorio a bases
 sys.path
 #sys.path.append('C:\\Users\\User\\Desktop\\Analitica lll\\Pipealejo71-ANALYTICS_lll_HEALTH_SECTOR') 
 sys.path.append('C:\\Users\\JavierBurgos\\Desktop\\LOCAL\\Analítica 3\\UNIDADES\\Unidad 3 - Aplicaciones en Operaciones (Salud)\\5.1 Entrega\\Pipealejo71-ANALYTICS_lll_HEALTH_SECTOR')
@@ -173,95 +173,75 @@ cronicos=pd.read_csv('RETO_df_cronicos.csv', delimiter=';', encoding='latin1')
 #######
 
 
-### 2. PREPROCESAMIENTO
+# PREPROCESAMIENTO
 
+# 1 USUARIOS
+#usuarios.info()
+#usuarios.shape
 
-## 2.1 USUARIOS
-
-usuarios.info()
-usuarios.shape
-
-# 2.1.1 Filtro usuarios mayores a 60 años
+# 1.1 Filtro usuarios mayores a 60 años
 usuarios = usuarios[usuarios['EDAD'] > 60]
 
-# 2.1.2 Limpiar y renombrar las variables - Función.1
+# 1.2 Limpiar y renombrar las variables - Función.1
 usuarios.rename(columns=Snake_case_clean, inplace=True)
-############display(usuarios.columns.tolist())
+#display(usuarios.columns.tolist())
 
-# 2.1.3 Grafico. Distribución de cada variable - Función.3 
-############Grafico1_usuarios(usuarios)
+# 1.3 Consulta grafico distribución de cada variable - Función.2 
+#Grafico_distribucion_usuarios(usuarios)
 
-# 2.1.4 Filtro exclución de variables con unica categoria
+# 1.4 Filtro excluir de variables con única categoría
 usuarios = usuarios.drop(['departamento', 
                           'ciclo_vital'], axis=1)
 
-# 2.1.5 Filtro datos asosiados a 2021
+# 1.5 Filtro datos asociados a 2021
 usuarios = usuarios[usuarios['year'] == 2021]
 
-# 2.1.5.1 Grafico. Distribución de la variable mes
-############grafico_distribucion_variable('barrio', usuarios)
+# 1.5.1 Consulta grafico distribución de variable 'mes' - Función.3
+#grafico_distribucion_variable('mes', usuarios)
 
-# 2.1.6 Filtro datos asosiados a enero
+# 6 Filtro datos asociados a enero
 usuarios = usuarios[usuarios['mes'] == 'ENERO']
 
-# 2.1.7 Consulta de forma agrupada, las variables según su tipo - Función.2
-Agrupar_variables_por_tipo(usuarios)
+# 1.7 Consulta agrupar las variables por tipo - Función.4
+#Agrupar_variables_por_tipo(usuarios)
 
-# 2.1.8 Reasignación de tipo de variable
+# 1.8 Reasignación de tipo a variables
 usuarios['nrodoc'] = usuarios['nrodoc'].astype(str)
+usuarios['edad'] = usuarios['edad'].astype('Int64')
+usuarios['fecha_inicio_al_pgp'] = pd.to_datetime(usuarios['fecha_inicio_al_pgp'])
+usuarios['fecha_primera_clase_funcional'] = pd.to_datetime(usuarios['fecha_primera_clase_funcional'])
+usuarios['fecha_ultima_clase_funcional'] = pd.to_datetime(usuarios['fecha_ultima_clase_funcional'])
 
-# 2.1.9 Filtro eliminar duplicados
+# 1.9 Filtro excluir duplicados
 usuarios = usuarios.drop_duplicates(subset=['nrodoc'], keep='first')
 
-# 2.1.10 Filtro datos asosiados a MEDELLIN
+# 1.10 Filtro datos asociados a MEDELLIN
 usuarios = usuarios[usuarios['municipio'] == 'MEDELLIN']
-# 2.1.11 Filtros 
-usuarios = usuarios.drop(['municipio'
+
+# 1.11 Filtro excluir variables
+usuarios = usuarios.drop(['municipio',
                           'year',
-                          'mes'
+                          'mes',
                           'barrio'], axis=1)
 
-# 2.1.12 PENDIENTE TRATAR LAS VARIABLES  CLASE FUNCIONAL
-#   EJECUTAR EL SIGUIENTE CODIGO 
+# 1.12 Verifica categorías de cada variable
+## Consultas
+#usuarios.info()
+#usuarios['sexo'].value_counts(dropna=False)
+#usuarios['primera_clase_funcional'].value_counts(dropna=False)
+#usuarios['ultima_clase_funcional'].value_counts(dropna=False)
+#usuarios['quinquenio'].value_counts(dropna=False)
+## Depuración
+usuarios = usuarios[usuarios['fecha_primera_clase_funcional'].notna()]
+usuarios['primera_clase_funcional'] = usuarios['primera_clase_funcional'].str.upper()
+usuarios['ultima_clase_funcional'] = usuarios['ultima_clase_funcional'].str.upper()
+
+# 1.13 Consulta final en usuarios
 usuarios.info()
 
-grafico_conteo_df(usuarios)
 
 
 
-
-
-
-
-
-
-
-def grafico_distribucion_variable_barrio(df, variable):
-    if variable not in df.columns:
-        raise ValueError(f"La variable '{variable}' no existe en el DataFrame.")
-
-    datos = df[variable].dropna()  # Handle missing values
-    tipo_dato = datos.dtype
-
-    if tipo_dato == 'object':  # Si es categórica (texto)
-        datos_unicos = datos.unique().astype(str)
-        # Check lengths for debugging
-        print(f"Número de valores únicos: {len(datos_unicos)}")
-        datos_conteo = pd.DataFrame({'valor': datos_unicos, 'frecuencia': datos.value_counts()})
-        print(f"Largo de datos_conteo: {len(datos_conteo)}")
-        plt.figure(figsize=(10, 6))
-        datos_conteo.plot(x='valor', y='frecuencia', kind='bar', color='skyblue', edgecolor='black')
-    else:  # Si es otro tipo (no compatible)
-        raise TypeError(f"No se puede graficar la distribución de una variable de tipo '{tipo_dato}'.")
-
-    plt.xlabel('Barrio')
-    plt.ylabel('Frecuencia')
-    plt.title(f"Distribución de barrios en {df.shape[0]} registros")
-    plt.xticks(rotation=45, ha='right')  # Rotar etiquetas de categorías para mejor visualización
-    plt.grid(axis='y')  # Solo mostrar cuadrícula en el eje Y para barras
-
-    plt.show()
-
-# Ejemplo de uso
-grafico_distribucion_variable_barrio(usuarios, 'barrio')
-
+# 2 EGRESOS
+#usuarios.info()
+#usuarios.shape
