@@ -237,11 +237,22 @@ usuarios['primera_clase_funcional'] = usuarios['primera_clase_funcional'].str.up
 usuarios['ultima_clase_funcional'] = usuarios['ultima_clase_funcional'].str.upper()
 
 # 1.13 Consulta final en usuarios
+usuarios.reset_index(inplace=True, drop=True)
 usuarios.info()
 
 
 
-
 # 2 EGRESOS
-#usuarios.info()
-#usuarios.shape
+#egresos.info()
+#egresos.shape
+
+
+
+
+# 2 CRONICOS
+
+
+
+
+# EXPORTAR BASE a CSV
+#BASE.to_csv('BASE.csv', index=False)
