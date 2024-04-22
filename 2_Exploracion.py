@@ -13,6 +13,15 @@ sys.path.append('C:\\Users\\User\\Desktop\\Analitica lll\\Pipealejo71-ANALYTICS_
 egresos=pd.read_csv('RETO_df_egresos.csv')
 usuarios=pd.read_csv('RETO_df_usuarios.csv')
 cronicos=pd.read_csv('RETO_df_cronicos.csv', delimiter=';', encoding='latin1')
+cronicos = cronicos.replace({'Ã³': 'o', 'Ã': 'u', 'Ã©': 'e', 'Ã¡': 'a'}, regex=True)
+cronicos.columns = (cronicos.columns.str.replace('Ã³', 'o')
+                                    .str.replace('Ã', 'u')
+                                    .str.replace('Ã©', 'e')
+                                    .str.replace('Ã¡', 'a')
+                                    .str.replace('Ãº', 'u')
+                                    .str.replace('Ã\x8d', 'i')
+                                    .str.replace('Ã\xad', 'i')
+                                    .str.replace('Ã±', 'ñ'))
 
 #Exploración de datos
 egresos.info()
@@ -56,7 +65,6 @@ egresos = egresos.drop('PERTINENCIA DIAGNOSTICA', axis=1)
 
 cronicos['YEAR'] = cronicos['YEAR'].astype(str)
 cronicos['NRODOC'] = cronicos['NRODOC'].astype(str)
-cronicos = cronicos.rename(columns={'AtenciÃ³n': 'Atencion'})
 cronicos['Atencion'] = cronicos['Atencion'].astype(str)
 cronicos['Ingreso'] = cronicos['Ingreso'].astype(str)
 
@@ -96,43 +104,11 @@ merged_df_2 = merged_df_2.rename(columns={'MES_y': 'MES'})
 
 #Se eliminan todas las columnas de Diagnosticos ya que contienen mas del 70% de datos nulos
 merged_df_2 = merged_df_2.loc[:, ~merged_df_2.columns.str.contains('Diagnostico')]
+merged_df_2.columns = merged_df_2.columns.str.upper()
 
+merged_df_2.to_csv('merged_df_2.csv', index=False)
 #Esta base final contendra la union de las tres bases con los filtros de los usuarios que tengan mas de 60 años y esten en la base de cronicos
 
 
-
-
-#### Cambios de Javier #######
-# Función para renombrar las columnas
-cronicos.rename(columns=clean_column_name, inplace=True)
-display(cronicos.columns.tolist())
-
-# Función para observar las variables por tipo de datos
-agrupar_variables_por_tipo(cronicos)
-
-#gráfico 
-import matplotlib.pyplot as plt
-# Contar la cantidad total de datos en cada variable
-cantidad_total_datos = cronicos.count()
-# Crear el gráfico de barras
-plt.figure(figsize=(10, 6))
-cantidad_total_datos.plot(kind='bar')
-plt.title('Cantidad total de datos por variable')
-plt.xlabel('Variables')
-plt.ylabel('Cantidad total de datos')
-plt.xticks(rotation=90)  # Rotar las etiquetas del eje x para una mejor legibilidad
-plt.tight_layout()
-plt.show()
-
-#Cantidad de datos en cada variable
-cantidad_total_datos = cronicos.count()
-print(cantidad_total_datos)
-cronicos.describe
-# Identificar variables vacías
-variables_vacias = cronicos.isnull().any()
-print(variables_vacias)
-
-# cronicos_filtrado ahora contiene solo las columnas con el 80% o más de sus datos diferentes de nulos
-cronicos=filtrar_columnas_por_porcentaje(cronicos, 0.8)
 
 
