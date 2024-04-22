@@ -106,8 +106,39 @@ merged_df_2 = merged_df_2.rename(columns={'MES_y': 'MES'})
 merged_df_2 = merged_df_2.loc[:, ~merged_df_2.columns.str.contains('Diagnostico')]
 merged_df_2.columns = merged_df_2.columns.str.upper()
 
+#Se eliminan los datos de 2017 y 2018 ya se que son datos muy viejos 
+merged_df_2 = merged_df_2[merged_df_2['YEAR'] != '2017']
+merged_df_2 = merged_df_2[merged_df_2['YEAR'] != '2018']
+merged_df_2.shape
+
+#### Se eliminan las columnas que no aportan informacion relevante
+
+# Calcular el porcentaje de valores nulos en cada columna
+null_percent = merged_df_2.isnull().sum() / len(merged_df_2)
+
+# Crear una lista de las columnas que tienen más del 95% de sus valores como nulos
+columns_to_drop = null_percent[null_percent > 0.95].index
+
+# Eliminar estas columnas del DataFrame
+merged_df_2 = merged_df_2.drop(columns_to_drop, axis=1)
+
+#Columnas con valores unicos 
+merged_df_2 = merged_df_2.drop(['TIPO CONTROL','TIPO IDENTIFICACION'], axis=1)
+
+#Se eliminan nulos de la columna ambito
+# Crear una lista con los valores "Domiciliario" y "Ambulatorio"
+values = ["Domiciliario", "Ambulatorio"]
+
+# Seleccionar solo las filas donde "AMBITO SEGUN EL MEDICO" es "Domiciliario" o "Ambulatorio"
+mask = merged_df_2["AMBITO SEGUN EL MEDICO"].isin(values)
+
+# Invertir la selección y eliminar estas filas
+merged_df_2 = merged_df_2[mask]
+
 merged_df_2.to_csv('merged_df_2.csv', index=False)
 #Esta base final contendra la union de las tres bases con los filtros de los usuarios que tengan mas de 60 años y esten en la base de cronicos
+
+
 
 
 
