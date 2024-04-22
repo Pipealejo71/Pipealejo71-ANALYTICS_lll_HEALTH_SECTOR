@@ -134,8 +134,7 @@ columns_to_drop = null_percent[null_percent > 0.95].index
 # Eliminar estas columnas del DataFrame
 merged_df_2 = merged_df_2.drop(columns_to_drop, axis=1)
 
-#Columnas con valores unicos 
-merged_df_2 = merged_df_2.drop(['TIPO CONTROL','TIPO IDENTIFICACION'], axis=1)
+merged_df_2 = merged_df_2.drop(['TIPO CONTROL','TIPO IDENTIFICACION','YEAR','NRO ATENCION','NRO INGRESO','NRODOC','OBSERVACIONES','ALTA MEDICA','POSIBLE ALTA','ANALISIS Y CONDUCTA A SEGUIR'], axis=1)
 
 #Exportacion dividida
 num_rows = len(merged_df_2)
@@ -147,6 +146,9 @@ merged_df_2_part2.to_csv('merged_df_2_part2.csv', index=False)
 #merged_df_2.to_csv('merged_df_2.csv', index=False) ## se dividio el dataframe para poder realizar el push en github
 #Esta base final contendra la union de las tres bases con los filtros de los usuarios que tengan mas de 60 años y esten en la base de cronicos
 
+
+
+### Codigo para Modelo
 
 
 
