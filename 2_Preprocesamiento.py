@@ -67,6 +67,9 @@ egresos = egresos.drop('PERTINENCIA DIAGNOSTICA', axis=1)
 egresos = egresos[egresos['YEAR'] != '2017']
 egresos = egresos[egresos['YEAR'] != '2018']
 
+#Se filtran los datos unicamente con madilidad de contrato PGP
+egresos = egresos[egresos['MODALIDAD CONTRATO'] == 'PGP']
+egresos = egresos.drop(['MODALIDAD CONTRATO', 'FUENTE FINANCIACION1', 'EPS VALIDADA'], axis=1)
 ## Cronicos
 
 cronicos['YEAR'] = cronicos['YEAR'].astype(str)
@@ -88,15 +91,9 @@ cronicos = cronicos[cronicos['YEAR'] != '2018']
 
 cronicos.columns = cronicos.columns.str.upper()
 
-#Se eliminan nulos de la columna ambito
-# Crear una lista con los valores "Domiciliario" y "Ambulatorio"
-values = ["Domiciliario", "Ambulatorio"]
-
-# Seleccionar solo las filas donde "AMBITO SEGUN EL MEDICO" es "Domiciliario" o "Ambulatorio"
-mask = cronicos["AMBITO SEGUN EL MEDICO"].isin(values)
-
-# Invertir la selección y eliminar estas filas
-cronicos = cronicos[mask]
+#Se seleccionan solo los pacientes que seran hospitalizados 
+cronicos = cronicos[cronicos['CLASE FUNCIONAL'] != 'Clase funcional 4']
+cronicos = cronicos[cronicos['AMBITO SEGUN EL MEDICO'] == 'Ambulatorio']
 
 ##Union de BD
 
@@ -134,11 +131,20 @@ columns_to_drop = null_percent[null_percent > 0.95].index
 # Eliminar estas columnas del DataFrame
 merged_df_2 = merged_df_2.drop(columns_to_drop, axis=1)
 
-merged_df_2 = merged_df_2.drop(['TIPO CONTROL','TIPO IDENTIFICACION','YEAR','NRO ATENCION','NRO INGRESO','NRODOC','OBSERVACIONES','ALTA MEDICA','POSIBLE ALTA','ANALISIS Y CONDUCTA A SEGUIR'], axis=1)
+# Cantidad de pacientes en BD
+unique_values = merged_df_2['NRODOC'].nunique()
+
+#Preparacion de datos
+merged_df_2 = merged_df_2.drop(['TIPO CONTROL','TIPO IDENTIFICACION','OBSERVACIONES','ALTA MEDICA','POSIBLE ALTA','ANALISIS Y CONDUCTA A SEGUIR'], axis=1)
+
+# Convertir las fechas a datetime
+merged_df_2['FECHA INGRESO SERVICIO'] = pd.to_datetime(merged_df_2['FECHA INGRESO SERVICIO'])
+merged_df_2['FECHA ALTA MEDICA'] = pd.to_datetime(merged_df_2['FECHA ALTA MEDICA'])
+
+# Crear la nueva columna
+merged_df_2['DIAS HOSPITALIZADO'] = (merged_df_2['FECHA ALTA MEDICA'] - merged_df_2['FECHA INGRESO SERVICIO']).dt.days
 
 #Exportacion
-num_rows = len(merged_df_2)
-merged_df_2 = merged_df_2.iloc[:split_index]
 merged_df_2.to_csv('merged_df_2.csv', index=False)
 merged_df_2.info()
 
