@@ -127,7 +127,7 @@ merged_df_2 = merged_df_2.rename(columns={'MES_y': 'MES'})
 # Calcular el porcentaje de valores nulos en cada columna
 null_percent = merged_df_2.isnull().sum() / len(merged_df_2)
 # Crear una lista de las columnas que tienen más del 95% de sus valores como nulos
-columns_to_drop = null_percent[null_percent > 0.95].index
+columns_to_drop = null_percent[null_percent > 0.90].index
 # Eliminar estas columnas del DataFrame
 merged_df_2 = merged_df_2.drop(columns_to_drop, axis=1)
 
