@@ -136,21 +136,11 @@ merged_df_2 = merged_df_2.drop(columns_to_drop, axis=1)
 
 merged_df_2 = merged_df_2.drop(['TIPO CONTROL','TIPO IDENTIFICACION','YEAR','NRO ATENCION','NRO INGRESO','NRODOC','OBSERVACIONES','ALTA MEDICA','POSIBLE ALTA','ANALISIS Y CONDUCTA A SEGUIR'], axis=1)
 
-merged_df_2.info()
-
-#Exportacion dividida
+#Exportacion
 num_rows = len(merged_df_2)
-#split_index = num_rows // 2
 merged_df_2 = merged_df_2.iloc[:split_index]
-#merged_df_2_part2 = merged_df_2.iloc[split_index:]
 merged_df_2.to_csv('merged_df_2.csv', index=False)
-#merged_df_2_part2.to_csv('merged_df_2_part2.csv', index=False)
-#merged_df_2.to_csv('merged_df_2.csv', index=False) ## se dividio el dataframe para poder realizar el push en github
-#Esta base final contendra la union de las tres bases con los filtros de los usuarios que tengan mas de 60 años y esten en la base de cronicos
-
 merged_df_2.info()
-
-
 
 ### Codigo para Modelo
 
