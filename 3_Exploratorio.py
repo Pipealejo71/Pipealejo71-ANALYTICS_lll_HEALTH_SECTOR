@@ -14,13 +14,53 @@ import matplotlib.pyplot as plt
 from sklearn.model_selection import RandomizedSearchCV
 import joblib
 from sklearn.preprocessing import StandardScaler
+from sklearn.feature_selection import SelectKBest, chi2, f_classif
 
 df_final=("merged_df_2.csv")  
 df_final=pd.read_csv(df_final)
 df = df_final.copy()
 df.dtypes
 
-# Cariables numericas y nonumericas
+#------------------------------------#
+
+# Verificar nombres de columnas
+df_final.columns
+
+# Estadísticas de los datos
+df_final.describe(include = 'all').T
+
+# Valores nulos
+df_final.fillna('?', inplace=True)
+column_null_counts = []
+
+for column in df_final.columns:
+    count = df_final[df_final[column] == '?'].shape[0]
+    column_null_counts.append((column, count))
+column_null_counts.sort()
+
+for column, count in column_null_counts:
+    print(column, count)
+print('Se tienen', len(df_final['NRODOC'].unique()), 'pacientes únicos en los datos.')
+
+# Cuántos pacientes se tienen?
+print('Se tienen', len(df_final['NRODOC'].unique()), 'pacientes únicos en merged_df_2.')
+
+# Análisis de edad vs CLASE FUNCIONAL
+ax = sns.countplot(x="QUINQUENIO", hue="CLASE FUNCIONAL", data=df_final)
+plt.xlabel('Age', size = 12)
+plt.xticks(rotation=90, size = 12)
+plt.ylabel('Count', size = 12)
+plt.show()
+
+# EDAD VS Días hospitalizado
+ax = sns.countplot(x='DIAS HOSPITALIZADO',   data= df_final)
+plt.xlabel('QUINQUENIO', size = 12)
+plt.xticks(rotation=90, size = 12)
+plt.ylabel('Count', size = 12)
+plt.show()
+
+
+# Cariables numericas y no numericas
 numeric_vars = df.select_dtypes(include=[np.number])
 non_numeric_vars = df.select_dtypes(exclude=[np.number])
 
@@ -45,3 +85,31 @@ columns = [(corr_matrix.columns[i], corr_matrix.columns[j], upper_tri[n]) for n,
 for col1, col2, corr in columns:
     print(f"{col1} y {col2} tienen una correlación del {corr*100:.2f}%")
 
+# Imprimir los tipos de datos en partes de 50 en 50 columnas
+for i in range(0, len(df_final.columns), 50):
+    print(df_final.dtypes[i:i+50])
+
+# Crear listas de columnas por categoría
+int_features = []
+float_features = []
+object_features = []
+
+for column in df_final.columns:
+    if df_final[column].dtype == 'int64':
+        int_features.append(column)
+    elif df_final[column].dtype == 'float64':
+        float_features.append(column)
+    elif df_final[column].dtype == 'object':
+        object_features.append(column)
+
+print("Integer Features:", int_features)
+print("Float Features:", float_features)
+print("Object Features:", object_features)
+
+
+### Seleccion de variables por metodo Wrapper ###
+#Backward selection
+df_final_sel = df_final.select_dtypes(include = ["number"]) # filtrar solo variables númericas
+#df_final_V2_int = df_final_V2_int.drop(['Attrition', 'retirementDate'], axis = 1) # excluir 'Attrition' y 'retirementDate'
+y = df_final['DIAS HOSPITALIZADO']
+df_final_sel.head()

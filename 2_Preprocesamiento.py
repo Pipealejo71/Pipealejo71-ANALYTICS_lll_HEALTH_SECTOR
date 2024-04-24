@@ -146,46 +146,6 @@ merged_df_2['FECHA ALTA MEDICA'] = pd.to_datetime(merged_df_2['FECHA ALTA MEDICA
 # Crear la nueva columna
 merged_df_2['DIAS HOSPITALIZADO'] = (merged_df_2['FECHA ALTA MEDICA'] - merged_df_2['FECHA INGRESO SERVICIO']).dt.days
 
-#------------------------------------#
-
-# Verificar nombres de columnas
-merged_df_2.columns
-
-# Estadísticas de los datos
-merged_df_2.describe(include = 'all').T
-
-# Valores nulos
-merged_df_2.fillna('?', inplace=True)
-column_null_counts = []
-
-for column in merged_df_2.columns:
-    count = merged_df_2[merged_df_2[column] == '?'].shape[0]
-    column_null_counts.append((column, count))
-column_null_counts.sort()
-
-for column, count in column_null_counts:
-    print(column, count)
-print('Se tienen', len(merged_df_2['NRODOC'].unique()), 'pacientes únicos en los datos.')
-
-# Cuántos pacientes se tienen?
-print('Se tienen', len(egresos['NRODOC'].unique()), 'pacientes únicos en egresos.')
-print('Se tienen', len(usuarios['NRODOC'].unique()), 'pacientes únicos en usuarios.')
-print('Se tienen', len(cronicos['NRODOC'].unique()), 'pacientes únicos en cronicos.')
-print('Se tienen', len(merged_df_2['NRODOC'].unique()), 'pacientes únicos en merged_df_2.')
-
-# Análisis de edad vs CLASE FUNCIONAL
-ax = sns.countplot(x="QUINQUENIO", hue="CLASE FUNCIONAL", data=merged_df_2)
-plt.xlabel('Age', size = 12)
-plt.xticks(rotation=90, size = 12)
-plt.ylabel('Count', size = 12)
-plt.show()
-
-# EDAD VS Días hospitalizado
-ax = sns.countplot(x='DIAS HOSPITALIZADO',   data= merged_df_2)
-plt.xlabel('QUINQUENIO', size = 12)
-plt.xticks(rotation=90, size = 12)
-plt.ylabel('Count', size = 12)
-plt.show()
 
 
 #Exportacion
