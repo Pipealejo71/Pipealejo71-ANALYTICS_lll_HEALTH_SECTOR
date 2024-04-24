@@ -44,3 +44,4 @@ columns = [(corr_matrix.columns[i], corr_matrix.columns[j], upper_tri[n]) for n,
 # Imprimir las columnas y sus correlaciones
 for col1, col2, corr in columns:
     print(f"{col1} y {col2} tienen una correlación del {corr*100:.2f}%")
+
