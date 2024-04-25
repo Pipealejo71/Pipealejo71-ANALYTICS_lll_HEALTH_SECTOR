@@ -145,6 +145,7 @@ merged_df_2['FECHA ALTA MEDICA'] = pd.to_datetime(merged_df_2['FECHA ALTA MEDICA
 
 # Crear la nueva columna
 merged_df_2['DIAS HOSPITALIZADO'] = (merged_df_2['FECHA ALTA MEDICA'] - merged_df_2['FECHA INGRESO SERVICIO']).dt.days
+merged_df_2 = merged_df_2.drop(['FECHA ALTA MEDICA', 'FECHA SALIDA', 'FECHA INGRESO CLINICA', 'FECHA INGRESO SERVICIO','YEAR'], axis=1)
 
 
 
@@ -152,7 +153,6 @@ merged_df_2['DIAS HOSPITALIZADO'] = (merged_df_2['FECHA ALTA MEDICA'] - merged_d
 merged_df_2.to_csv('merged_df_2.csv', index=False)
 merged_df_2.info()
 
-### Codigo para Modelo
 
 
 
