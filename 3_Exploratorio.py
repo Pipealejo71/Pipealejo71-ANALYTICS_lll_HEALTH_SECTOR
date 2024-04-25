@@ -209,10 +209,11 @@ tree.fit(df_final_corr, y)
 importances = tree.feature_importances_
 
 # Crear una lista de tuplas (importancia, columna)
-importances = [(round(importance, 5), column) for importance, column in zip(importances, df_corr_dummies.columns)]
+importances = [(round(importance, 5), column) for importance, column in zip(importances, df_final_corr.columns)]
 
 # Ordenar la lista en función de la importancia
 importances.sort(reverse=True)
+len(importances)
 #----------------------------------------#
 ###Seleccion de variables mediante Random Forest###
 
@@ -226,18 +227,21 @@ forest.fit(df_final_corr, y)
 importances_2 = forest.feature_importances_
 
 # Crear una lista de tuplas (importancia, columna)
-importances_2 = [(round(importances_2, 5), column) for importances_2, column in zip(importances_2, df_corr_dummies.columns)]
+importances_2 = [(round(importances_2, 5), column) for importances_2, column in zip(importances_2, df_final_corr.columns)]
 # Ordenar la lista en función de la importancia
 importances_2.sort(reverse=True)
 
 #Lista de variables a usar en modelos
-top_15_columns = [column for importances_2, column in importances_2[:15]]
+top_1= [column for importances, column in importances[:20]]
+top_2= [column for importances_2, column in importances_2[:20]]
 
 #creacion de dataframe y exportacion de BD
-df_final_V1 = df_final_corr[top_15_columns]
-# Add 'DIAS HOSPITALIZADO' column to df_final_V1 from df_final
+df_final_V1 = df_final_corr[top_1]
+df_final_V2 = df_final_corr[top_2]
 df_final_V1['DIAS HOSPITALIZADO'] = df_final['DIAS HOSPITALIZADO']
+df_final_V2['DIAS HOSPITALIZADO'] = df_final['DIAS HOSPITALIZADO']
 #Exportacion
 df_final_V1.to_csv('df_final_V1.csv', index=False)
+df_final_V2.to_csv('df_final_V2.csv', index=False)
 
 
