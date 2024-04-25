@@ -21,6 +21,7 @@ from sklearn.feature_selection import SelectKBest, chi2, f_classif
 from sklearn.linear_model import LogisticRegression
 from sklearn.feature_selection import RFE
 from sklearn.ensemble import RandomForestRegressor
+from scipy.stats import chi2_contingency
 
 #Cargar data_base
 df_final=("merged_df_2.csv")  
@@ -91,7 +92,7 @@ numeric_vars = df_final.select_dtypes(include=[np.number])
 non_numeric_vars = df_final.select_dtypes(exclude=[np.number])
 
 
-# MATRIX DE CORRELACION VARIABLES NUMERICAS
+### MATRIX DE CORRELACION VARIABLES NUMERICAS
 corr_matrix = numeric_vars.corr()
 
 plt.figure(figsize=(50, 20))
@@ -114,10 +115,50 @@ for col1, col2, corr in columns:
 
 column_names = [col1 for col1, col2, corr in columns]
 
+### Evaluacion Chi-cuadrado para evaluar colinealidad de variables categoricas
+# Crear una lista para almacenar las columnas categóricas
+categorical_columns = []
+
+# Iterar sobre cada columna del DataFrame
+for column in df_final.columns:
+    # Guardar los valores únicos de la columna
+    unique_values = df_final[column].unique()
+
+    # Si la columna tiene más de 1 valor único pero menos de 10, convertirla a categórica
+    if 1 < len(unique_values) < 10:
+        print(f"Valores únicos en la columna {column} (total {len(unique_values)}): {unique_values}")
+        df_final[column] = df_final[column].astype('category')
+        categorical_columns.append(column)
+
+# Crear un nuevo DataFrame con las columnas categóricas
+df_categoricas = df_final[categorical_columns]
+df_categoricas.dtypes
+
+# Crear una lista para almacenar los pares de columnas con colinealidad y sus valores p
+collinear_pairs = []
+
+# Iterar sobre cada par de columnas
+for i, column1 in enumerate(df_categoricas.columns):
+    for j in range(i + 1, len(df_categoricas.columns)):
+        column2 = df_categoricas.columns[j]
+
+        # Crear una tabla de contingencia
+        contingency_table = pd.crosstab(df_categoricas[column1], df_categoricas[column2])
+
+        # Realizar la prueba de chi-cuadrado
+        chi2, p, dof, expected = chi2_contingency(contingency_table)
+
+        # Si el p-valor es menor que 0.05, entonces las columnas están asociadas
+        if p < 0.05:
+            collinear_pairs.append((column1, column2, p))
+
+
 ### ELIMINACION DE COLUMNAS ###
 
 # Eliminar las columnas altamente correlacionadas para evitar multicolinealidad
 df_final = df_final.drop(column_names, axis=1)
+
+#Eliminar columnas con corre
 
 # Eliminar columnas con valores constantes
 df_final = df_final.loc[:, df_final.apply(pd.Series.nunique) != 1]
@@ -133,45 +174,10 @@ for column in null_columns:
 # Eliminar columnas con valores nulos
 df_final = df_final.drop(null_columns, axis=1)
 
-
+#Seleccion y filtrado de columnas 
 #----------------------------------------# 
 ###SELECCION VARIABLES ###
 
-# Crear un diccionario para almacenar los valores únicos de cada columna
-unique_values = {}
-
-# Iterar sobre cada columna del DataFrame
-for column in df_final.columns:
-    # Guardar los valores únicos de la columna en el diccionario
-    unique_values[column] = df_final[column].unique()
-
-# Mostrar los valores únicos de las columnas que tienen mas de 1 valor pero menos de 10 valores únicos
-selected_columns = []
-
-for column, values in unique_values.items():
-    if 1 < len(values) < 10:
-        print(f"Valores únicos en la columna {column} (total {len(values)}): {values}")
-        selected_columns.append(column)
-
-# Crear un diccionario vacío para almacenar las columnas categóricas
-categorical_columns = {}
-
-# Convertir cada columna en categórica si está en df_final y añadir al diccionario
-for column in selected_columns:
-    if column in df_final.columns:  # Verificar si la columna existe en el DataFrame
-        df_final[column] = df_final[column].astype('category')
-        categorical_columns[column] = df_final[column]
-
-# Crear un nuevo DataFrame con las columnas categóricas
-df_categoricas = pd.DataFrame(categorical_columns)
-
-print(df_categoricas.dtypes)
-print(df_categoricas)
-
-# Verificar algunos resultados
-print(df_final.dtypes)  # Imprimir los tipos de datos para confirmar que son categóricos
-
-df_categoricas = df_final.dtypes(include=['category'])
 
 y = df_final['DIAS HOSPITALIZADO']
 df_corr=df_final.drop(['INGRESO','NRO INGRESO','NRODOC','DIAS HOSPITALIZADO'], axis=1)
@@ -225,10 +231,12 @@ importances_2 = [(round(importances_2, 5), column) for importances_2, column in 
 importances_2.sort(reverse=True)
 
 #Lista de variables a usar en modelos
-top_15_columns = [column for importance, column in importances_2[:15]]
+top_15_columns = [column for importances_2, column in importances_2[:15]]
 
 #creacion de dataframe y exportacion de BD
 df_final_V1 = df_final_corr[top_15_columns]
+# Add 'DIAS HOSPITALIZADO' column to df_final_V1 from df_final
+df_final_V1['DIAS HOSPITALIZADO'] = df_final['DIAS HOSPITALIZADO']
 #Exportacion
 df_final_V1.to_csv('df_final_V1.csv', index=False)
 

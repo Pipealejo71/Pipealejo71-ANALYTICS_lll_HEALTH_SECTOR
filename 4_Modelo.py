@@ -23,7 +23,7 @@ from sklearn.feature_selection import RFE
 from sklearn.ensemble import RandomForestRegressor
 
 #Cargar data_base
-df_final=("merged_df_2.csv")  
+df_final=("df_final_V1.csv")  
 df_final=pd.read_csv(df_final)
 df_copy = df_final.copy()
 
