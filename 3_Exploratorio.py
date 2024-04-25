@@ -1,3 +1,4 @@
+#Cargar paquetes
 import pandas as pd
 from sklearn.linear_model import LogisticRegression
 from sklearn import tree
@@ -11,17 +12,17 @@ import seaborn as sns
 import scipy.stats as stats
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.preprocessing import MinMaxScaler
-
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.model_selection import RandomizedSearchCV
 import joblib
 from sklearn.preprocessing import StandardScaler
 from sklearn.feature_selection import SelectKBest, chi2, f_classif
-
 from sklearn.linear_model import LogisticRegression
 from sklearn.feature_selection import RFE
+from sklearn.ensemble import RandomForestRegressor
 
+#Cargar data_base
 df_final=("merged_df_2.csv")  
 df_final=pd.read_csv(df_final)
 df_copy = df_final.copy()
@@ -85,7 +86,7 @@ con el mayor numero de pacientes registrada
 
 ###
 
-# Cariables numericas y no numericas
+# Variables numericas y no numericas
 numeric_vars = df_final.select_dtypes(include=[np.number])
 non_numeric_vars = df_final.select_dtypes(exclude=[np.number])
 
@@ -152,21 +153,31 @@ for column, values in unique_values.items():
         print(f"Valores únicos en la columna {column} (total {len(values)}): {values}")
         selected_columns.append(column)
 
+# Crear un diccionario vacío para almacenar las columnas categóricas
+categorical_columns = {}
 
-# Convertir cada columna en categórica
+# Convertir cada columna en categórica si está en df_final y añadir al diccionario
 for column in selected_columns:
     if column in df_final.columns:  # Verificar si la columna existe en el DataFrame
         df_final[column] = df_final[column].astype('category')
+        categorical_columns[column] = df_final[column]
+
+# Crear un nuevo DataFrame con las columnas categóricas
+df_categoricas = pd.DataFrame(categorical_columns)
+
+print(df_categoricas.dtypes)
+print(df_categoricas)
 
 # Verificar algunos resultados
-print(df_final.dtypes)  # Imprime los tipos de datos para confirmar que son categóricos
+print(df_final.dtypes)  # Imprimir los tipos de datos para confirmar que son categóricos
 
+df_categoricas = df_final.dtypes(include=['category'])
 
 y = df_final['DIAS HOSPITALIZADO']
 df_corr=df_final.drop(['INGRESO','NRO INGRESO','NRODOC','DIAS HOSPITALIZADO'], axis=1)
 df_corr.columns
 # Convertir variables categóricas en dummies
-df_corr_dummies = pd.get_dummies(df_corr)
+df_corr_dummies = pd.get_dummies(df_categoricas)
 
 #Normalizar variables numericas
 df_final_sel = df_final.select_dtypes(include = ["number"]) # filtrar solo variables númericas
@@ -181,7 +192,6 @@ df_final_V2_norm.head()
 df_final_corr = pd.concat([df_final_V2_norm, df_corr_dummies], axis=1)
 #----------------------------------------#
 ### Seleccion de variables mediante Arbol de decision###
-from sklearn.tree import DecisionTreeRegressor
 
 # Crear un árbol de decisión con parámetros ajustados
 tree = DecisionTreeRegressor(max_depth=10, min_samples_split=10, min_samples_leaf=5, random_state=0)
@@ -199,7 +209,6 @@ importances = [(round(importance, 5), column) for importance, column in zip(impo
 importances.sort(reverse=True)
 #----------------------------------------#
 ###Seleccion de variables mediante Random Forest###
-from sklearn.ensemble import RandomForestRegressor
 
 # Crear un Random Forest
 forest = RandomForestRegressor(random_state=0)
@@ -214,3 +223,13 @@ importances_2 = forest.feature_importances_
 importances_2 = [(round(importances_2, 5), column) for importances_2, column in zip(importances_2, df_corr_dummies.columns)]
 # Ordenar la lista en función de la importancia
 importances_2.sort(reverse=True)
+
+#Lista de variables a usar en modelos
+top_15_columns = [column for importance, column in importances_2[:15]]
+
+#creacion de dataframe y exportacion de BD
+df_final_V1 = df_final_corr[top_15_columns]
+#Exportacion
+df_final_V1.to_csv('df_final_V1.csv', index=False)
+
+
