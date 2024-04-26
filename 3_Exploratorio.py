@@ -95,10 +95,17 @@ non_numeric_vars = df_final.select_dtypes(exclude=[np.number])
 ### MATRIX DE CORRELACION VARIABLES NUMERICAS
 corr_matrix = numeric_vars.corr()
 
-plt.figure(figsize=(50, 20))
-sns.heatmap(corr_matrix, annot=True, cmap='coolwarm')
-plt.title('Matrix de Correlacion')
+
+plt.matshow(corr_matrix, cmap="PRGn", vmin=-1, vmax=1, aspect='auto', interpolation='nearest')
+plt.gcf().set_size_inches(90, 30) 
+plt.xticks(range(len(corr_matrix.columns)), corr_matrix.columns, rotation=90)
+plt.yticks(range(len(corr_matrix.columns)), corr_matrix.columns)
+for i in range(len(corr_matrix.columns)):
+    for j in range(len(corr_matrix.columns)):
+        plt.text(j, i, round(corr_matrix.iloc[i,j],2))
+plt.colorbar()
 plt.show()
+
 
 # Obtener los índices por encima de la diagonal
 upper_tri_indices = np.triu_indices_from(corr_matrix, k=1)
