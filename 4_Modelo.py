@@ -185,7 +185,11 @@ tun_rf = RandomizedSearchCV(m_rf, param_distributions=param_grid, n_iter=20, sco
 tun_rf.fit(X2, y2)
 
 # Imprimir los mejores parámetros
+pd.set_option('display.max_colwidth', 100)
+resultados = tun_rf.cv_results_
 print(tun_rf.best_params_)
+pd_resultados = pd.DataFrame(resultados)
+display(pd_resultados[["params", "mean_test_score"]])
 
 # Guardar el modelo con hyperparameter tunning
 rf_final = tun_rf.best_estimator_
