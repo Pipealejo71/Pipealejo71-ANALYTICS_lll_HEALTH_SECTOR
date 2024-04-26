@@ -22,6 +22,9 @@ from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.ensemble import GradientBoostingRegressor
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.model_selection import RandomizedSearchCV, train_test_split
+from sklearn.metrics import mean_squared_error, r2_score
 
 #Cargar data_base
 df_final=("df_final_V1.csv")
@@ -120,7 +123,7 @@ comparacion_metricas_2 = pd.DataFrame({
 comparacion_metricas_2
 
 #------------------------------------#
-
+###ARBOLES DE DECISION####
 ### Tuneo de hiperparametros
 
 #Para Arboles de decisión
@@ -128,7 +131,7 @@ param_grid = [{'max_depth': [2,15, None],
                'min_samples_split': [10, 101, 10], 
                'min_samples_leaf': [1, 5, 10]}]
 
-tun_rtree = RandomizedSearchCV(m_rtree, param_distributions=param_grid, n_iter=10, scoring="r2")
+tun_rtree = RandomizedSearchCV(m_rtree, param_distributions=param_grid, n_iter=20, scoring="r2")
 tun_rtree.fit(X2, y2)
 
 pd.set_option('display.max_colwidth', 100)
@@ -148,6 +151,53 @@ rtree_final.fit(X_train, y_train)
 
 # Hacer predicciones en el conjunto de prueba
 y_pred = rtree_final.predict(X_test)
+
+# Calcular el MSE
+mse = mean_squared_error(y_test, y_pred)
+
+# Calcular el R^2
+r2 = r2_score(y_test, y_pred)
+
+# Imprimir el MSE y el R^2
+print(f"MSE: {mse}")
+print(f"R^2: {r2}")
+
+#------------------------------------#
+###RANDOM FOREST####
+### Tuneo de hiperparametros
+
+# Definir los parámetros para la búsqueda
+param_grid = {
+    'n_estimators': [100, 200, 300, 400],
+    'max_depth': [None, 10, 20, 30],
+    'min_samples_split': [2, 5, 10],
+    'min_samples_leaf': [1, 2, 4],
+    'bootstrap': [True, False]
+}
+
+# Crear el objeto RandomForestRegressor
+m_rf = RandomForestRegressor()
+
+# Crear el objeto RandomizedSearchCV
+tun_rf = RandomizedSearchCV(m_rf, param_distributions=param_grid, n_iter=20, scoring="r2")
+
+# Ajustar RandomizedSearchCV a los datos
+tun_rf.fit(X2, y2)
+
+# Imprimir los mejores parámetros
+print(tun_rf.best_params_)
+
+# Guardar el modelo con hyperparameter tunning
+rf_final = tun_rf.best_estimator_
+
+# Dividir los datos en conjuntos de entrenamiento y prueba
+X_train, X_test, y_train, y_test = train_test_split(X2, y2, test_size=0.2, random_state=42)
+
+# Ajustar el modelo al conjunto de entrenamiento
+rf_final.fit(X_train, y_train)
+
+# Hacer predicciones en el conjunto de prueba
+y_pred = rf_final.predict(X_test)
 
 # Calcular el MSE
 mse = mean_squared_error(y_test, y_pred)
