@@ -232,14 +232,17 @@ importances_2 = [(round(importances_2, 5), column) for importances_2, column in 
 importances_2.sort(reverse=True)
 
 #Lista de variables a usar en modelos
-top_1= [column for importances, column in importances[:20]]
-top_2= [column for importances_2, column in importances_2[:20]]
+top_1= [column for importances, column in importances[:12]]
+top_2= [column for importances_2, column in importances_2[:12]]
 
 #creacion de dataframe y exportacion de BD
 df_final_V1 = df_final_corr[top_1]
 df_final_V2 = df_final_corr[top_2]
 df_final_V1['DIAS HOSPITALIZADO'] = df_final['DIAS HOSPITALIZADO']
 df_final_V2['DIAS HOSPITALIZADO'] = df_final['DIAS HOSPITALIZADO']
+# Eliminar las columnas 'NRO INGRESO' y 'NRODOC' de los dataframes df_final_V1 y df_final_V2
+df_final_V1 = df_final_V1.drop(['NRO INGRESO', 'NRODOC'], axis=1, errors='ignore')
+df_final_V2 = df_final_V2.drop(['NRO INGRESO', 'NRODOC'], axis=1, errors='ignore')
 #Exportacion
 df_final_V1.to_csv('df_final_V1.csv', index=False)
 df_final_V2.to_csv('df_final_V2.csv', index=False)

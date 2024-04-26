@@ -21,6 +21,11 @@ from sklearn.feature_selection import RFE
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.ensemble import GradientBoostingRegressor
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import mean_squared_error, r2_score
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.tree import DecisionTreeRegressor
+from sklearn.ensemble import GradientBoostingRegressor
 
 #Cargar data_base
 df_final=("df_final_V1.csv")
@@ -52,9 +57,7 @@ X=df.drop(['DIAS HOSPITALIZADO'], axis=1)
 y=df['DIAS HOSPITALIZADO']
 
 ##Definicion de Modelos 
-from sklearn.ensemble import RandomForestRegressor
-from sklearn.tree import DecisionTreeRegressor
-from sklearn.ensemble import GradientBoostingRegressor
+
 
 m_rtree = DecisionTreeRegressor()  
 m_rf = RandomForestRegressor()  
@@ -91,9 +94,6 @@ X2=df_2.drop(['DIAS HOSPITALIZADO'], axis=1)
 y2=df_2['DIAS HOSPITALIZADO']
 
 ##Definicion de Modelos 
-from sklearn.ensemble import RandomForestRegressor
-from sklearn.tree import DecisionTreeRegressor
-from sklearn.ensemble import GradientBoostingRegressor
 
 m_rtree = DecisionTreeRegressor()  
 m_rf = RandomForestRegressor()  
@@ -141,3 +141,24 @@ print(tun_rtree.best_params_)
 pd_resultados = pd.DataFrame(resultados)
 display(pd_resultados[["params", "mean_test_score"]])
 rtree_final = tun_rtree.best_estimator_ ### Guardar el modelo con hyperparameter tunning
+
+
+
+# Dividir los datos en conjuntos de entrenamiento y prueba
+X_train, X_test, y_train, y_test = train_test_split(X2, y, test_size=0.2, random_state=42)
+
+# Ajustar el modelo al conjunto de entrenamiento
+rtree_final.fit(X_train, y_train)
+
+# Hacer predicciones en el conjunto de prueba
+y_pred = rtree_final.predict(X_test)
+
+# Calcular el MSE
+mse = mean_squared_error(y_test, y_pred)
+
+# Calcular el R^2
+r2 = r2_score(y_test, y_pred)
+
+# Imprimir el MSE y el R^2
+print(f"MSE: {mse}")
+print(f"R^2: {r2}")
