@@ -239,8 +239,8 @@ importances_2 = [(round(importances_2, 5), column) for importances_2, column in 
 importances_2.sort(reverse=True)
 
 #Lista de variables a usar en modelos
-top_1= [column for importances, column in importances[:12]]
-top_2= [column for importances_2, column in importances_2[:12]]
+top_1= [column for importances, column in importances[:20]]
+top_2= [column for importances_2, column in importances_2[:20]]
 
 #creacion de dataframe y exportacion de BD
 df_final_V1 = df_final_corr[top_1]

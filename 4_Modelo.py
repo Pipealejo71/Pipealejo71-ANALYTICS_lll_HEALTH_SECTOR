@@ -1,6 +1,5 @@
 #Cargar paquetes
 import pandas as pd
-from sklearn.linear_model import LogisticRegression
 from sklearn import tree
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.ensemble import GradientBoostingClassifier
@@ -18,9 +17,6 @@ import joblib
 from sklearn.preprocessing import StandardScaler
 from sklearn.feature_selection import SelectKBest, chi2, f_classif
 from sklearn.feature_selection import RFE
-from sklearn.ensemble import RandomForestRegressor
-from sklearn.tree import DecisionTreeRegressor
-from sklearn.ensemble import GradientBoostingRegressor
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.ensemble import RandomForestRegressor
@@ -128,12 +124,12 @@ comparacion_metricas_2
 ### Tuneo de hiperparametros
 
 #Para Arboles de decisión
-param_grid = [{'max_depth': [3, 5, 7, 9, 11, None], 
-               'min_samples_split': [2, 5, 10, 20], 
-               'min_samples_leaf': [1, 5, 10, 20]}]
+param_grid = [{'max_depth': [2,15, None], 
+               'min_samples_split': [10, 101, 10], 
+               'min_samples_leaf': [1, 5, 10]}]
 
-tun_rtree = RandomizedSearchCV(m_rtree, param_distributions=param_grid, n_iter=10, scoring="accuracy")
-tun_rtree.fit(X2, y)
+tun_rtree = RandomizedSearchCV(m_rtree, param_distributions=param_grid, n_iter=10, scoring="r2")
+tun_rtree.fit(X2, y2)
 
 pd.set_option('display.max_colwidth', 100)
 resultados = tun_rtree.cv_results_
