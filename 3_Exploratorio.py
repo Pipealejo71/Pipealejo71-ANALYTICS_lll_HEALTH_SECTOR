@@ -1,3 +1,4 @@
+#EXPLORACION 
 #Cargar paquetes
 import pandas as pd
 from sklearn.linear_model import LogisticRegression
@@ -62,7 +63,7 @@ plt.show()
 
 # EDAD VS Días hospitalizado
 ax = sns.countplot(x='DIAS HOSPITALIZADO',   data= df_copy)
-plt.xlabel('QUINQUENIO', size = 12)
+plt.xlabel('DIAS HOSPITALIZADO', size = 12)
 plt.xticks(rotation=90, size = 12)
 plt.ylabel('Count', size = 12)
 plt.show()
@@ -70,14 +71,13 @@ plt.show()
 #Cantidad de pacientes por clase funcional
 # Contar los valores únicos de 'NRODOC' en cada 'CLASE FUNCIONAL'
 df_grouped = df_copy.groupby('CLASE FUNCIONAL')['NRODOC'].nunique().reset_index()
-# Crear la gráfica de barras
 ax = sns.barplot(x='CLASE FUNCIONAL', y='NRODOC', data=df_grouped)
 plt.xlabel('Clase Funcional', size = 12)
 plt.xticks(rotation=90, size = 12)
 plt.ylabel('Cantidad de Pacientes Únicos', size = 12)
 plt.show()
 
-###
+### DF_FINAL CLASE FUNCIONAL 2A
 df_final = df_final[df_final['CLASE FUNCIONAL'] == 'Clase funcional 2A']
 '''
 Se realizara una prediccion de los pacientes
@@ -95,7 +95,6 @@ non_numeric_vars = df_final.select_dtypes(exclude=[np.number])
 ### MATRIX DE CORRELACION VARIABLES NUMERICAS
 corr_matrix = numeric_vars.corr()
 
-
 plt.matshow(corr_matrix, cmap="PRGn", vmin=-1, vmax=1, aspect='auto', interpolation='nearest')
 plt.gcf().set_size_inches(90, 30) 
 plt.xticks(range(len(corr_matrix.columns)), corr_matrix.columns, rotation=90)
@@ -105,6 +104,24 @@ for i in range(len(corr_matrix.columns)):
         plt.text(j, i, round(corr_matrix.iloc[i,j],2))
 plt.colorbar()
 plt.show()
+
+
+### MATRIX DE CORRELACION VARIABLES NUMERICAS con correlación superior a 0.7
+upper_tri_indices = np.triu_indices_from(corr_matrix, k=1)
+upper_tri = corr_matrix.values[upper_tri_indices]
+columns = [(corr_matrix.columns[i], corr_matrix.columns[j], upper_tri[n]) for n, (i, j) in enumerate(zip(*upper_tri_indices)) if upper_tri[n] > 0.7]
+plt.figure(figsize=(12, 12))
+
+for i, (col1, col2, corr) in enumerate(columns):
+    plt.subplot(4, 4, i+1)
+    sns.scatterplot(data=df_final, x=col1, y=col2)
+    plt.title(f'{col1} vs {col2} (Correlation: {corr:.2f})', size=12)
+    plt.xticks(size=10)
+    plt.yticks(size=10)
+plt.tight_layout()
+plt.show()
+
+
 
 
 # Obtener los índices por encima de la diagonal

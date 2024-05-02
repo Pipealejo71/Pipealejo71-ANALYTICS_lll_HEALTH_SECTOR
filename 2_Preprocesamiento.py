@@ -8,8 +8,8 @@ import matplotlib.pyplot as plt
 
 ## Ruta directorio qué tiene paquetes
 sys.path
-sys.path.append('C:\\Users\\User\\Desktop\\Analitica lll\\Pipealejo71-ANALYTICS_lll_HEALTH_SECTOR') 
-#sys.path.append('C:\\Users\\JavierBurgos\\Desktop\\LOCAL\\Analítica 3\\UNIDADES\\Unidad 3 - Aplicaciones en Operaciones (Salud)\\5.1 Entrega\\Pipealejo71-ANALYTICS_lll_HEALTH_SECTOR')
+#sys.path.append('C:\\Users\\User\\Desktop\\Analitica lll\\Pipealejo71-ANALYTICS_lll_HEALTH_SECTOR') 
+sys.path.append('C:\\Users\\JavierBurgos\\Desktop\\LOCAL\\Analítica 3\\UNIDADES\\Unidad 3 - Aplicaciones en Operaciones (Salud)\\5.1 Entrega\\Pipealejo71-ANALYTICS_lll_HEALTH_SECTOR')
 
 #Carga de datos
 egresos=pd.read_csv('RETO_df_egresos.csv')
@@ -72,8 +72,8 @@ egresos = egresos[egresos['YEAR'] != '2018']
 #Se filtran los datos unicamente con madilidad de contrato PGP
 egresos = egresos[egresos['MODALIDAD CONTRATO'] == 'PGP']
 egresos = egresos.drop(['MODALIDAD CONTRATO', 'FUENTE FINANCIACION1', 'EPS VALIDADA'], axis=1)
-## Cronicos
 
+## Cronicos
 cronicos['YEAR'] = cronicos['YEAR'].astype(str)
 cronicos['NRODOC'] = cronicos['NRODOC'].astype(str)
 cronicos['Atencion'] = cronicos['Atencion'].astype(str)
@@ -112,7 +112,6 @@ merged_df = merged_df.rename(columns={'MES_y': 'MES'})
 merged_df['FECHA NACIMIENTO_y'] = merged_df['FECHA NACIMIENTO_x']
 merged_df = merged_df.drop('FECHA NACIMIENTO_x', axis=1)
 merged_df = merged_df.rename(columns={'FECHA NACIMIENTO_y': 'FECHA NACIMIENTO'})
-merged_df.columns
 
 #Inner Join de Base merged_df con Cronicos por NRODOC 
 merged_df_2 = pd.merge(merged_df, cronicos, on='NRODOC', how='inner')
@@ -135,6 +134,7 @@ merged_df_2 = merged_df_2.drop(columns_to_drop, axis=1)
 
 # Cantidad de pacientes en BD
 unique_values = merged_df_2['NRODOC'].nunique()
+unique_values
 
 #Preparacion de datos
 merged_df_2 = merged_df_2.drop(['TIPO CONTROL','TIPO IDENTIFICACION','OBSERVACIONES','ALTA MEDICA','POSIBLE ALTA','ANALISIS Y CONDUCTA A SEGUIR'], axis=1)
