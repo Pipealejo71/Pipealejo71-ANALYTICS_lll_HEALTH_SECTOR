@@ -166,13 +166,37 @@ print(f"R^2: {r2}")
 #------------------------------------#
 ###RANDOM FOREST####
 ### Tuneo de hiperparametros
+'''
+Cambio de hiperparametros con espaciado estandar.  
+Mejoró el desempeño
 
-# Definir los parámetros para la búsqueda
+HIPERPARAMETROS ANTERIORES:
+
 param_grid = {
+
     'n_estimators': [100, 200, 300, 400],
     'max_depth': [None, 10, 20, 30],
     'min_samples_split': [2, 5, 10],
-    'min_samples_leaf': [1, 2, 4],
+    'min_samples_leaf': [1, 2, 5],
+    'bootstrap': [True, False]
+}
+
+Se pasó de 
+    MSE: 2.0322960454594607
+    R^2: 0.9214058016555424
+
+a
+    MSE: 1.9898731429574636
+    R^2: 0.9230464061437708
+'''
+
+# Definir los parámetros para la búsqueda
+param_grid = {
+
+    'n_estimators': [100, 200, 300, 400],
+    'max_depth': [None, 10, 20, 30],
+    'min_samples_split': [2, 5, 8],
+    'min_samples_leaf': [1, 2, 3],
     'bootstrap': [True, False]
 }
 
