@@ -167,7 +167,6 @@ for i, column1 in enumerate(df_categoricas.columns):
 # Eliminar las columnas altamente correlacionadas para evitar multicolinealidad
 df_final = df_final.drop(column_names, axis=1)
 
-#Eliminar columnas con corre
 
 # Eliminar columnas con valores constantes
 df_final = df_final.loc[:, df_final.apply(pd.Series.nunique) != 1]
@@ -195,8 +194,7 @@ df_corr.columns
 df_corr_dummies = pd.get_dummies(df_categoricas)
 
 #Normalizar variables numericas
-df_final_sel = df_final.select_dtypes(include = ["number"]) # filtrar solo variables númericas
-df_final_sel = df_final_sel.drop(['DIAS HOSPITALIZADO'], axis=1)
+df_final_sel = df_corr.select_dtypes(include = ["number"]) # filtrar solo variables númericas
 df_final_V2_norm = df_final_sel.copy(deep = True)  # crear una copia del DataFrame
 scaler = MinMaxScaler()  # asignar el tipo de normalización
 sv = scaler.fit_transform(df_final_V2_norm.iloc[:, :])  # normalizar los datos
@@ -243,6 +241,22 @@ importances_2.sort(reverse=True)
 #Lista de variables a usar en modelos
 top_2= [column for importances_2, column in importances_2[:20]]
 
+# Crear una lista de las 20 características más importantes
+top_20 = importances_2[:20]
+
+# Extraer los nombres de las características y las importancias
+feature_names = [column for importance, column in top_20]
+importances = [importance for importance, column in top_20]
+
+# Crear la gráfica de barras
+plt.figure(figsize=(10, 6))
+plt.barh(feature_names, importances, color='skyblue')
+plt.xlabel('Importance')
+plt.title('Feature Importance')
+plt.gca().invert_yaxis()  # invertir el eje y para que las características más importantes estén en la parte superior
+plt.show()
+
+#----------------------------------------#
 #creacion de dataframe y exportacion de BD
 df_final_V2 = df_final_corr[top_2]
 df_final_V2['DIAS HOSPITALIZADO'] = df_final['DIAS HOSPITALIZADO']
