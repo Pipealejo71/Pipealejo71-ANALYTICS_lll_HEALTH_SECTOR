@@ -1,26 +1,11 @@
 #EXPLORACION 
 #Cargar paquetes
+import matplotlib.pyplot as plt
 import pandas as pd
-from sklearn.linear_model import LogisticRegression
-from sklearn import tree
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.ensemble import GradientBoostingClassifier
-from sklearn.feature_selection import SelectFromModel
-from sklearn.model_selection import cross_val_predict, cross_val_score, cross_validate, train_test_split 
-from sklearn.metrics import mean_squared_error
-from sklearn import metrics
 import seaborn as sns
-import scipy.stats as stats
+import numpy as np
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.preprocessing import MinMaxScaler
-import numpy as np
-import matplotlib.pyplot as plt
-from sklearn.model_selection import RandomizedSearchCV
-import joblib
-from sklearn.preprocessing import StandardScaler
-from sklearn.feature_selection import SelectKBest, chi2, f_classif
-from sklearn.linear_model import LogisticRegression
-from sklearn.feature_selection import RFE
 from sklearn.ensemble import RandomForestRegressor
 from scipy.stats import chi2_contingency
 
@@ -256,19 +241,14 @@ importances_2 = [(round(importances_2, 5), column) for importances_2, column in 
 importances_2.sort(reverse=True)
 
 #Lista de variables a usar en modelos
-top_1= [column for importances, column in importances[:20]]
 top_2= [column for importances_2, column in importances_2[:20]]
 
 #creacion de dataframe y exportacion de BD
-df_final_V1 = df_final_corr[top_1]
 df_final_V2 = df_final_corr[top_2]
-df_final_V1['DIAS HOSPITALIZADO'] = df_final['DIAS HOSPITALIZADO']
 df_final_V2['DIAS HOSPITALIZADO'] = df_final['DIAS HOSPITALIZADO']
 # Eliminar las columnas 'NRO INGRESO' y 'NRODOC' de los dataframes df_final_V1 y df_final_V2
-df_final_V1 = df_final_V1.drop(['NRO INGRESO', 'NRODOC'], axis=1, errors='ignore')
 df_final_V2 = df_final_V2.drop(['NRO INGRESO', 'NRODOC'], axis=1, errors='ignore')
 #Exportacion
-df_final_V1.to_csv('df_final_V1.csv', index=False)
 df_final_V2.to_csv('df_final_V2.csv', index=False)
 
 
