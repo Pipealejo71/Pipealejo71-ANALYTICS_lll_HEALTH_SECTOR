@@ -121,6 +121,10 @@ print(f"MAE para RandomForest: {RF_mae}")
 ###GRADIENT BOOSTING####
 ### Tuneo de hiperparametros ###
 # Definir los parámetros para la búsqueda
+'''
+Ajunte de hiperparametros
+
+ATENTIORMENTE:
 param_grid = {
     'n_estimators': [100, 200, 300, 400],
     'learning_rate': [0.01, 0.1, 0.2],
@@ -128,6 +132,24 @@ param_grid = {
     'min_samples_split': [2, 5, 8],
     'min_samples_leaf': [1, 2, 3],
     'subsample': [0.5, 0.7, 1.0]
+}
+
+SE PASO DE:
+    MSE para GradientBoosting: 3.7956224953798827
+    MAE para GradientBoosting: 1.462416727459052
+A:
+    MSE para GradientBoosting: 0.5832093268592665
+    MAE para GradientBoosting: 0.16097630876541147
+
+'''
+#Parametros testeados, para mejor resultado
+param_grid = {
+    'n_estimators': [100, 200, 300, 400],
+    'learning_rate': [0.5, 0.7, 0.9],
+    'max_depth': [None, 3, 5, 7],
+    'min_samples_split': [2, 5, 8],
+    'min_samples_leaf': [1, 2, 3],
+    'subsample': [0.5, 0.7, 0.9]
 }
 
 # Crear el objeto GradientBoostingRegressor
